@@ -15,3 +15,5 @@ apropos "decode"
 ```
 
 - For converting hash to plain text, in Kali there is a rockyou.txt wordlist at `/usr/share/wordlists/`, which you can use to convert with tools like hashmap or john (john the ripper)
+
+- in JSON files, do not put the , at the end if there is no other element
