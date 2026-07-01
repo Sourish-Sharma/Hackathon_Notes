@@ -8,8 +8,10 @@
 
 - If you forget the name of a Linux command entirely, use apropos. It searches through the short descriptions of all offline manual pages for a keyword 
 
-```
+```Bash
 apropos "md5"
 apropos "partition"
 apropos "decode"
 ```
+
+- For converting hash to plain text, in Kali there is a rockyou.txt wordlist at `/usr/share/wordlists/`, which you can use to convert with tools like hashmap or john (john the ripper)

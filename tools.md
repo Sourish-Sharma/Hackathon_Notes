@@ -1,4 +1,7 @@
-- Wireshark
-- Nmap
-- openssl
-- 
+- Wireshark | Page made
+- Nmap | Page made
+- openssl | Page made
+- grep
+- tr | page made
+- sqlmap
+- nc | page made
