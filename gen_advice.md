@@ -17,3 +17,15 @@ apropos "decode"
 - For converting hash to plain text, in Kali there is a rockyou.txt wordlist at `/usr/share/wordlists/`, which you can use to convert with tools like hashmap or john (john the ripper)
 
 - in JSON files, do not put the , at the end if there is no other element
+
+- in python, I can open python in a terminal and use help() to find what something does, and import something then ask help() for it to learn on the go. Also if allowed I can use `pydoc3 <command>` to check what it does like a man page. I can also use `dir(object)` to check for all the methods available on it 
+
+- If you know your output is running of the screen, pipe it to less `cat bird.jpg | less`
+
+- Always use `file target.dat` and `exiftool target.dat` first in forensics questions
+
+- To check if the flag is directly put into the file, you can use strings (always use this anyways) with `strings file.dat | grep "flag"`
+
+- for files, also you have to use `xxd file.type | less` is forensics, here xxd takes a binary file and converts it to a standard human readable hex dump
+
+- binwalk is another very important tool for analyzing and forensics and finding if anything is hidden in another file, you should use `binwalk -e target.dat`
