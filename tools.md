@@ -5,3 +5,7 @@
 - tr | page made
 - sqlmap
 - nc | page made
+- Burp interceptor
+- Ghidra
+- *xxd*
+- binwalk

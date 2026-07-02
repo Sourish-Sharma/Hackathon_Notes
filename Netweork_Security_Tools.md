@@ -7,6 +7,7 @@
     - `-sV` : probes open ports to tell you exactly what software are running
     - `-sC` : Runs default enumeration scripts and looks for easy vulnerabilities automatically
     - `-T4` : makes the scan run fast/ timing template
+    - we can also add `-p-` if you want it to scan all the ports, without it only the top 1000 ports are scanned
 
 ### Netcat (nc)
 *nc reads and writes data across network connections using TCP or IDP, mostly used in hackathons for challenge ports or to catch a shell*

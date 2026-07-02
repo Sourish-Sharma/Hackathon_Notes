@@ -59,3 +59,6 @@ If a specific resource endpoint is found (e.g., `/api/swagger/v1/users/123`), st
 ### Testing Strategy & Automation
 * **Automation:** Use **Burp Intruder** with the built-in "HTTP verbs" list to automatically cycle through different methods.
 * **Safety Constraint:** Always target **low-priority objects** during testing to avoid unintended consequences (e.g., destroying critical data or flooding logs/databases).
+
+- Always try out /api whenever you can to check the docs, also can try /openapi.json
+- Always change a get request to options to check if some other info is there
