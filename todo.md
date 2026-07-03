@@ -16,9 +16,7 @@
 
 
 ## Weekly Plan
-- [ ] Review current progress
-- [ ] Identify blockers
-- [ ] Update next steps
+- nothing
 
 ## Completion Criteria
 - [ ] Key result 1

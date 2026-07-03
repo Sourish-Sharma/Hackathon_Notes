@@ -66,7 +66,14 @@ apropos "decode"
 
 - When exploring files from other directories, do try to look in to /root by `ls -la /root`
 
-- To know in a cft what all tools you can access, specially without password (NOPASSWD), do `sudo -l`, and if even that does not work out, then you can use `find / -perm -4000 -type f 2>/dev/null` to find all the permition for tools you have
+- To know in a cft what all tools you can access, specially without password (NOPASSWD), do `sudo -l`, and if even that does not work out, then you can use `find / -perm -4000 -type f 2>/dev/null` to find all the permition for tools you have where
+    - `2>/dev/null` hides permission denied messages to keep the terminal clear
 
 - You can use `ln -s <part to target> <linkname>` to create system links, but make sure to remove the original file first with rm or use -sf in the ln command to force and overwrite the file
 
+- *find* is used to search for files in a filesystem with this format `find [starting_directory] [options] [expression]`, here are a few examples:
+    - `find / -name "*haproxy*.cfg" 2>/dev/null` to locate a config file
+    - the above type command to find files owned by root that have root priviledge
+
+- *xargs* gives the output of the command on the right piped into it to the command on the left as arguments
+    - `cat "useless.txt" | xargs rm` here it would input the text in useless.txt as arguments to rm
