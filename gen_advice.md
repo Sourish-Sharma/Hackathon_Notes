@@ -77,3 +77,6 @@ apropos "decode"
 
 - *xargs* gives the output of the command on the right piped into it to the command on the left as arguments
     - `cat "useless.txt" | xargs rm` here it would input the text in useless.txt as arguments to rm
+
+- *sed* is used as find and replace without opening text editors in this format `sed 's/old_text/new_text/g' filename`, and follows the same format as vim
+    - `sed -i 's/10.0.0.5/127.0.0.1/g' haproxy.cfg` will replace the ip, and -i would replace in place instead of just pasting the output

